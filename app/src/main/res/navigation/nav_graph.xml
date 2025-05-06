@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_flower">
+
+    <fragment
+        android:id="@+id/fragment_flower"
+        android:name="com.tai.taichungattractioninformation.fragments.FlowerFragment"
+        android:label="Tab 1" />
+
+    <fragment
+        android:id="@+id/fragment_attraction"
+        android:name="com.tai.taichungattractioninformation.fragments.AttractionFragment"
+        android:label="Tab 2" />
+</navigation>
