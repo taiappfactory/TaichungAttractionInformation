@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +10,15 @@ plugins {
 android {
     namespace = "com.tai.taichungattractioninformation"
     compileSdk = 35
+
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    }
+
+    val googleApiKey = localProperties.getProperty("GOOGLE_API_KEY")
+    val googleSearchCx = localProperties.getProperty("GOOGLE_SEARCH_CX")
 
     defaultConfig {
         applicationId = "com.tai.taichungattractioninformation"
@@ -19,6 +31,10 @@ android {
 
         // Required when setting minSdkVersion to 20 or lower
         multiDexEnabled = true
+
+        // 讓 BuildConfig 可以用這個 key
+        buildConfigField("String", "GOOGLE_API_KEY", "\"$googleApiKey\"")
+        buildConfigField("String", "GOOGLE_SEARCH_CX", "\"$googleSearchCx\"")
     }
 
     buildTypes {
@@ -47,6 +63,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -63,6 +80,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.ui.tooling.preview.android)
+//    implementation(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -83,4 +101,10 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // AsyncImage
+    implementation(libs.coil.compose)
+
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
 }
