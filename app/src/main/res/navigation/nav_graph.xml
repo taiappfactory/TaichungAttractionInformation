@@ -6,11 +6,11 @@
 
     <fragment
         android:id="@+id/fragment_flower"
-        android:name="com.tai.taichungattractioninformation.fragments.FlowerFragment"
+        android:name="com.tai.taichungattractioninformation.ui.fragments.FlowerFragment"
         android:label="Tab 1" />
 
     <fragment
         android:id="@+id/fragment_attraction"
-        android:name="com.tai.taichungattractioninformation.fragments.AttractionFragment"
+        android:name="com.tai.taichungattractioninformation.ui.fragments.AttractionFragment"
         android:label="Tab 2" />
 </navigation>

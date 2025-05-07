@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
+    // 台中公開資訊站 API 的 Retrofit 實例
     private const val BASE_URL = "https://datacenter.taichung.gov.tw/swagger/OpenData/"
 
     private val loggingInterceptor = Interceptor { chain ->
@@ -44,4 +45,11 @@ object ApiClient {
             .build()
             .create(ApiService::class.java)
     }
+
+    // Google Image Search API 的 Retrofit 實例
+    val googleApi = Retrofit.Builder()
+        .baseUrl("https://www.googleapis.com/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ApiService.GoogleSearchApi::class.java)
 }
