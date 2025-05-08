@@ -35,7 +35,7 @@ import com.tai.taichungattractioninformation.viewmodels.FlowerAndAttractionViewM
 
 class MainActivity : FragmentActivity() {
     private val containerId = View.generateViewId()
-    lateinit var viewModel: FlowerAndAttractionViewModel
+    private lateinit var viewModel: FlowerAndAttractionViewModel
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,10 +60,10 @@ class MainActivity : FragmentActivity() {
                                     onClick = { viewModel.toggleLanguage() },
                                     modifier = Modifier.padding(end = 8.dp),
                                     colors = ButtonDefaults.textButtonColors(
-                                        containerColor = Color(0xFFD4C3AA)
+                                        containerColor = Color(0xFFD4B8B4)
                                     )
                                 ) {
-                                    Text(text = if (language == "zh") "英文" else "Chinese",
+                                    Text(text = if (language == "zh") "English" else "中文",
                                         color = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }

@@ -1,5 +1,6 @@
 package com.tai.taichungattractioninformation.viewmodels
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +8,6 @@ import com.tai.taichungattractioninformation.BuildConfig
 import com.tai.taichungattractioninformation.models.AttractionDataResponseItem
 import com.tai.taichungattractioninformation.models.FlowerDataResponseItem
 import com.tai.taichungattractioninformation.repo.Repository
-import android.app.Application
 import com.tai.taichungattractioninformation.util.LanguagePreference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -79,7 +79,7 @@ fun FlowerScreen(flowerDataItem: List<FlowerDataResponseItem>, language: String)
                     .fillMaxWidth()
                     .padding(top = 10.dp, start = 10.dp, end = 10.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF8E6E57),
+                    containerColor = Color(0xFFBFADA1),
                     contentColor = Color.White
                 )
             ) {
