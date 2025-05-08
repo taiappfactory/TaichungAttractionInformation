@@ -1,6 +1,8 @@
 package com.tai.taichungattractioninformation.ui.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,17 +18,23 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.tai.taichungattractioninformation.R
 import com.tai.taichungattractioninformation.models.FlowerDataResponseItem
 import com.tai.taichungattractioninformation.viewmodels.FlowerAndAttractionViewModel
+import java.util.Locale
 
 class FlowerFragment : Fragment() {
     private lateinit var viewModel: FlowerAndAttractionViewModel
@@ -67,34 +75,50 @@ class FlowerFragment : Fragment() {
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun FlowerScreen(flowerDataItem: List<FlowerDataResponseItem>, language: String) {
-    // 使用 LazyColumn 顯示資料
-    LazyColumn {
-        items(flowerDataItem) { item ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFBFADA1),
-                    contentColor = Color.White
-                )
-            ) {
-                Row(
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        LazyColumn {
+            items(flowerDataItem) { item ->
+                Card(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
+                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFBFADA1),
+                        contentColor = Color.White
+                    )
                 ) {
-                    if (item.flowerType.isNotEmpty()) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            if (language == "zh") {
-                                Text(text = "花種：${item.flowerType}", fontSize = 18.sp)
-                                Text(text = "地點：${item.location}", fontSize = 18.sp)
-                                Text(text = "區域：${item.city} ${item.district}", fontSize = 18.sp)
-                                Text(text = "觀賞期：${item.viewingPeriod}", fontSize = 18.sp)
-                            } else {
-                                Text(text = "Flower Type：${item.flowerType}", fontSize = 18.sp)
-                                Text(text = "Location：${item.location}", fontSize = 18.sp)
-                                Text(text = "Area：${item.city} ${item.district}", fontSize = 18.sp)
-                                Text(text = "Viewing Period：${item.viewingPeriod}", fontSize = 18.sp)
+                    Row(modifier = Modifier.fillMaxSize()) {
+                        if (item.flowerType.isNotEmpty()) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.label_flower_type,
+                                        item.flowerType
+                                    ),
+                                    fontSize = 18.sp
+                                )
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.label_location,
+                                        item.location
+                                    ),
+                                    fontSize = 18.sp
+                                )
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.label_area,
+                                        item.city,
+                                        item.district
+                                    ),
+                                    fontSize = 18.sp
+                                )
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.label_viewing_period,
+                                        item.viewingPeriod
+                                    ),
+                                    fontSize = 18.sp
+                                )
                             }
                         }
                     }

@@ -1,7 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TaiChungAttractionInformation</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="attraction_fragment">Attraction Fragment</string>
-    <string name="flower_fragment">Flower Fragment</string>
+    <string name="app_title">台中樂遊</string>
+    <string name="tab_flower">賞花</string>
+    <string name="tab_attraction">海域遊憩景點</string>
+    <string name="switch_to_english">English</string>
+    <string name="switch_to_chinese">中文</string>
+
+    <string name="label_flower_type">花種：%1$s</string>
+    <string name="label_location">地點：%1$s</string>
+    <string name="label_area">區域：%1$s %2$s</string>
+    <string name="label_viewing_period">觀賞期：%1$s</string>
+
+    <string name="label_name">景點名稱：%1$s</string>
+    <string name="label_intro">景點特色簡述：%1$s</string>
+    <string name="label_tel">景點服務電話：%1$s</string>
+    <string name="label_address">景點地址：%1$s</string>
+    <string name="label_open_time">開放時間：%1$s</string>
+    <string name="label_open_time_note">開放時間備註：%1$s</string>
+    <string name="label_official_web">前往景點官網</string>
+    <string name="label_google_map">Google地圖</string>
+
 </resources>

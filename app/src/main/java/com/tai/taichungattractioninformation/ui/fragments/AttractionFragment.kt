@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -28,7 +29,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -37,6 +40,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.compose.AsyncImage
+import com.tai.taichungattractioninformation.R
 import com.tai.taichungattractioninformation.models.AttractionDataResponseItem
 import com.tai.taichungattractioninformation.ui.WebViewActivity
 import com.tai.taichungattractioninformation.viewmodels.FlowerAndAttractionViewModel
@@ -80,10 +84,11 @@ class AttractionFragment : Fragment() {
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun AttractionScreen(flowerDataItem: List<AttractionDataResponseItem>, language: String) {
-    // 使用 LazyColumn 顯示資料
+fun AttractionScreen(attractionDataItem: List<AttractionDataResponseItem>, language: String) {
+    val context = LocalContext.current
+
     LazyColumn {
-        items(flowerDataItem) { item ->
+        items(attractionDataItem) { item ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -93,9 +98,7 @@ fun AttractionScreen(flowerDataItem: List<AttractionDataResponseItem>, language:
                     contentColor = Color.White
                 )
             ) {
-                BoxWithConstraints(
-                    modifier = Modifier.fillMaxHeight()
-                ) {
+                BoxWithConstraints(modifier = Modifier.fillMaxHeight()) {
                     AsyncImage(
                         model = item.photoUrl,
                         contentDescription = null,
@@ -105,149 +108,66 @@ fun AttractionScreen(flowerDataItem: List<AttractionDataResponseItem>, language:
                             .height(200.dp)
                     )
                 }
+
                 Column(modifier = Modifier.padding(16.dp)) {
-                    val context = LocalContext.current
+                    val name = if (language == "zh") item.name else item.englishName
+                    val intro = if (language == "zh") item.introChinese else item.introEnglish
+                    val address = if (language == "zh") item.address else item.englishAddress
+                    val openTimeNote = if (language == "zh") item.openTimeNote else item.openTimeEnglishNote
 
-                    if (language == "zh") {
-                        Text(text = "景點名稱：${item.name}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "景點特色簡述：${item.introChinese}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "景點服務電話：${item.tel}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "景點地址：${item.address}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "開放時間：${item.openTime}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "開放時間備註：${item.openTimeNote}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        // 景點官網文字與 URL
-                        val annotatedLinkString = buildAnnotatedString {
-                            val url = item.url
-                            append("前往景點官網")
-                            addStyle(
-                                style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline),
-                                start = 0,
-                                end = this.length
-                            )
-                            addStringAnnotation(tag = "URL", annotation = url, start = 0, end = this.length)
-                        }
+                    Text(stringResource(R.string.label_name, name), fontSize = 18.sp)
+                    Spacer(Modifier.height(8.dp))
+                    Text(stringResource(R.string.label_intro, intro), fontSize = 18.sp)
+                    Spacer(Modifier.height(8.dp))
+                    Text(stringResource(R.string.label_tel, item.tel), fontSize = 18.sp)
+                    Spacer(Modifier.height(8.dp))
+                    Text(stringResource(R.string.label_address, address), fontSize = 18.sp)
+                    Spacer(Modifier.height(8.dp))
+                    Text(stringResource(R.string.label_open_time, item.openTime), fontSize = 18.sp)
+                    Spacer(Modifier.height(8.dp))
+                    Text(stringResource(R.string.label_open_time_note, openTimeNote), fontSize = 18.sp)
+                    Spacer(Modifier.height(8.dp))
 
-                        val annotatedMapString = buildAnnotatedString {
-                            val mapUrl = item.mapServiceUrl
-                            append("Google地圖")
-                            addStyle(
-                                style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline),
-                                start = 0,
-                                end = this.length
-                            )
-                            addStringAnnotation(tag = "MAP", annotation = mapUrl, start = 0, end = this.length)
-                        }
-
-                        Text(
-                            text = annotatedLinkString,
-                            modifier = Modifier
-                                .padding(vertical = 4.dp)
-                                .clickable {
-                                    annotatedLinkString
-                                        .getStringAnnotations("URL", 0, annotatedLinkString.length)
-                                        .firstOrNull()?.let { annotation ->
-                                            val intent = Intent(context, WebViewActivity::class.java)
-                                            intent.putExtra("url", annotation.item)
-                                            context.startActivity(intent)
-                                        }
-                                },
-                            fontSize = 18.sp
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Text(
-                            text = annotatedMapString,
-                            modifier = Modifier
-                                .padding(vertical = 4.dp)
-                                .clickable {
-                                    annotatedMapString
-                                        .getStringAnnotations("MAP", 0, annotatedMapString.length)
-                                        .firstOrNull()?.let { annotation ->
-                                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
-                                            context.startActivity(intent)
-                                        }
-                                },
-                            fontSize = 18.sp
-                        )
-
-                    } else {
-                        Text(text = "Name：${item.englishName}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Introduction：${item.introEnglish}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Tel：${item.tel}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Address：${item.englishAddress}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Open Time：${item.openTime}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Open Time Note：${item.openTimeEnglishNote}", fontSize = 18.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        // 景點官網文字與 URL
-                        val annotatedLinkString = buildAnnotatedString {
-                            val url = item.url
-                            append("Official Web")
-                            addStyle(
-                                style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline),
-                                start = 0,
-                                end = this.length
-                            )
-                            addStringAnnotation(tag = "URL", annotation = url, start = 0, end = this.length)
-                        }
-
-                        val annotatedMapString = buildAnnotatedString {
-                            val mapUrl = item.mapServiceUrl
-                            append("GoogleMap")
-                            addStyle(
-                                style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline),
-                                start = 0,
-                                end = this.length
-                            )
-                            addStringAnnotation(tag = "MAP", annotation = mapUrl, start = 0, end = this.length)
-                        }
-
-                        Text(
-                            text = annotatedLinkString,
-                            modifier = Modifier
-                                .padding(vertical = 4.dp)
-                                .clickable {
-                                    annotatedLinkString
-                                        .getStringAnnotations("URL", 0, annotatedLinkString.length)
-                                        .firstOrNull()?.let { annotation ->
-                                            val intent = Intent(context, WebViewActivity::class.java)
-                                            intent.putExtra("url", annotation.item)
-                                            context.startActivity(intent)
-                                        }
-                                },
-                            fontSize = 18.sp
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Text(
-                            text = annotatedMapString,
-                            modifier = Modifier
-                                .padding(vertical = 4.dp)
-                                .clickable {
-                                    annotatedMapString
-                                        .getStringAnnotations("MAP", 0, annotatedMapString.length)
-                                        .firstOrNull()?.let { annotation ->
-                                            val intent = Intent(Intent.ACTION_VIEW,
-                                                annotation.item.toUri())
-                                            context.startActivity(intent)
-                                        }
-                                },
-                            fontSize = 18.sp
-                        )
-
+                    // 景點官網
+                    val linkText = buildAnnotatedString {
+                        val url = item.url
+                        append(stringResource(R.string.label_official_web))
+                        addStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline), 0, length)
+                        addStringAnnotation("URL", url, 0, length)
                     }
+                    ClickableText(
+                        text = linkText,
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        style = TextStyle(fontSize = 18.sp),
+                        onClick = { offset ->
+                            linkText.getStringAnnotations("URL", offset, offset).firstOrNull()?.let {
+                                val intent = Intent(context, WebViewActivity::class.java)
+                                intent.putExtra("url", it.item)
+                                context.startActivity(intent)
+                            }
+                        }
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    // Google 地圖
+                    val mapText = buildAnnotatedString {
+                        val mapUrl = item.mapServiceUrl
+                        append(stringResource(R.string.label_google_map))
+                        addStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline), 0, length)
+                        addStringAnnotation("MAP", mapUrl, 0, length)
+                    }
+                    ClickableText(
+                        text = mapText,
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        style = TextStyle(fontSize = 18.sp),
+                        onClick = { offset ->
+                            mapText.getStringAnnotations("MAP", offset, offset).firstOrNull()?.let {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.item))
+                                context.startActivity(intent)
+                            }
+                        }
+                    )
                 }
             }
         }

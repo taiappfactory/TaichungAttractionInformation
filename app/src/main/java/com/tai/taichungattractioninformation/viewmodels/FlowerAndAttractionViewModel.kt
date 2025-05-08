@@ -1,16 +1,21 @@
 package com.tai.taichungattractioninformation.viewmodels
 
 import android.app.Application
+import android.content.Context
+import android.content.Intent
+import android.content.res.Configuration
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.tai.taichungattractioninformation.models.AttractionDataResponseItem
 import com.tai.taichungattractioninformation.models.FlowerDataResponseItem
 import com.tai.taichungattractioninformation.repo.Repository
+import com.tai.taichungattractioninformation.ui.MainActivity
 import com.tai.taichungattractioninformation.util.LanguagePreference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(application) {
     private val repo = Repository()
@@ -35,10 +40,16 @@ class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(
     }
 
     fun toggleLanguage() {
-        val newLang = if (_languageState.value == "zh") "en" else "zh"
-        _languageState.value = newLang
         viewModelScope.launch {
+            val newLang = if (_languageState.value == "zh") "en" else "zh"
             LanguagePreference.saveLanguage(getApplication(), newLang)
+
+            // 建議：直接用 Activity 重啟的方式來套用新的 Context
+            val context = getApplication<Application>()
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            context.startActivity(intent)
         }
     }
 
