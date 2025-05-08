@@ -20,5 +20,5 @@ data class FlowerDataResponseItem(
     @SerializedName("觀賞時期")
     val viewingPeriod: String,
     @SerializedName("imageUrl")
-    val imageUrl: String = ""
+    val imageUrl: String? = null
 )

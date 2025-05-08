@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1044022827505",
+    "project_id": "taichungattractioninformation",
+    "storage_bucket": "taichungattractioninformation.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044022827505:android:d381d4fefa6650d6224c50",
+        "android_client_info": {
+          "package_name": "com.tai.taichungattractioninformation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZPtPYfBlypTXR6GsGf1ws_zCTOc40r_g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

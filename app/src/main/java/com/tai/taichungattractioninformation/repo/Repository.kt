@@ -6,7 +6,8 @@ import com.tai.taichungattractioninformation.network.ApiClient
 
 class Repository {
     suspend fun fetchFlowerList(): List<FlowerDataResponseItem> {
-        return ApiClient.retrofit.getFlowerList()
+        val response = ApiClient.retrofit.getFlowerList()
+        return response.sortedBy { it.flowerType }
     }
 
     suspend fun fetchAttractionList(): List<AttractionDataResponseItem> {
