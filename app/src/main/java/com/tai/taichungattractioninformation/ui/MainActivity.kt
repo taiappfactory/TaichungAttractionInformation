@@ -7,12 +7,8 @@ import android.view.View
 import androidx.activity.compose.setContent
 import androidx.annotation.IdRes
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -34,12 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.tai.taichungattractioninformation.R
 import com.tai.taichungattractioninformation.viewmodels.FlowerAndAttractionViewModel
@@ -49,14 +43,6 @@ class MainActivity : FragmentActivity() {
     private val containerId = View.generateViewId()
     private lateinit var viewModel: FlowerAndAttractionViewModel
 
-    private fun updateLocale(context: Context, language: String) {
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-        val config = Configuration(context.resources.configuration)
-        config.setLocale(locale)
-        context.resources.updateConfiguration(config, context.resources.displayMetrics)
-    }
-
     override fun onResume() {
         super.onResume()
 
@@ -65,17 +51,6 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private fun refreshCurrentFragment() {
-        val navHostFragment = supportFragmentManager.findFragmentById(containerId) as? NavHostFragment
-        val navController = navHostFragment?.navController
-        val currentDestination = navController?.currentDestination
-        currentDestination?.let {
-            navController.popBackStack(it.id, inclusive = true)
-            navController.navigate(it.id)
-        }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -95,6 +70,18 @@ class MainActivity : FragmentActivity() {
             supportFragmentManager.findFragmentById(containerId) as? NavHostFragment
         val navController = navHostFragment?.navController
         navController?.navigate(destinationId)
+    }
+
+    // 動態切換 App 的語言（Locale）設定
+    private fun updateLocale(context: Context, language: String) {
+        val locale = Locale(language) // 建立新的 Locale 物件，例如 "en"、"zh"、"ja"
+        Locale.setDefault(locale)     // 設定新的預設語言，影響全域資源取得
+
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(locale)      // 將新語言設到目前的 Configuration 上
+
+        context.resources.updateConfiguration(config, context.resources.displayMetrics)
+        // 更新 context 的資源設定，讓 UI 馬上反映語言變更
     }
 }
 
@@ -161,7 +148,7 @@ fun MainScreen(
                         }
                     }
                 ) { padding ->
-                    // AndroidView + FragmentContainerView 維持不變
+                    // Compose 使用 Fragment 需使用 AndroidView 來顯示
                     AndroidView(
                         modifier = Modifier
                             .fillMaxSize()

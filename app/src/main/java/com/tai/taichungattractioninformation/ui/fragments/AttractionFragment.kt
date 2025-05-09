@@ -36,7 +36,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.compose.AsyncImage
@@ -69,6 +68,7 @@ class AttractionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Fragment 使用 Compose 需使用 ComposeView 來顯示
         return ComposeView(requireContext()).apply {
             setContent {
                 val attractionData by viewModel.attractionState.collectAsState()
@@ -135,18 +135,20 @@ fun AttractionScreen(attractionDataItem: List<AttractionDataResponseItem>, langu
                         addStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline), 0, length)
                         addStringAnnotation("URL", url, 0, length)
                     }
-                    ClickableText(
-                        text = linkText,
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        style = TextStyle(fontSize = 18.sp),
-                        onClick = { offset ->
-                            linkText.getStringAnnotations("URL", offset, offset).firstOrNull()?.let {
+                    Text(
+                        text = stringResource(R.string.label_official_web),
+                        color = Color.Blue,
+                        fontSize = 18.sp,
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier
+                            .padding(vertical = 4.dp)
+                            .clickable {
                                 val intent = Intent(context, WebViewActivity::class.java)
-                                intent.putExtra("url", it.item)
+                                intent.putExtra("url", item.url)
                                 context.startActivity(intent)
                             }
-                        }
                     )
+
 
                     Spacer(Modifier.height(8.dp))
 
@@ -157,17 +159,19 @@ fun AttractionScreen(attractionDataItem: List<AttractionDataResponseItem>, langu
                         addStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline), 0, length)
                         addStringAnnotation("MAP", mapUrl, 0, length)
                     }
-                    ClickableText(
-                        text = mapText,
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        style = TextStyle(fontSize = 18.sp),
-                        onClick = { offset ->
-                            mapText.getStringAnnotations("MAP", offset, offset).firstOrNull()?.let {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.item))
+                    Text(
+                        text = stringResource(R.string.label_google_map),
+                        color = Color.Blue,
+                        fontSize = 18.sp,
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier
+                            .padding(vertical = 4.dp)
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.mapServiceUrl))
                                 context.startActivity(intent)
                             }
-                        }
                     )
+
                 }
             }
         }

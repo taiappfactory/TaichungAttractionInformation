@@ -1,9 +1,7 @@
 package com.tai.taichungattractioninformation.viewmodels
 
 import android.app.Application
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,9 +11,11 @@ import com.tai.taichungattractioninformation.repo.Repository
 import com.tai.taichungattractioninformation.ui.MainActivity
 import com.tai.taichungattractioninformation.util.LanguagePreference
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(application) {
     private val repo = Repository()
@@ -28,9 +28,15 @@ class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(
     private val _attractionState = MutableStateFlow<List<AttractionDataResponseItem>>(emptyList())
     val attractionState: StateFlow<List<AttractionDataResponseItem>> = _attractionState
 
+    // 多語系
     private val _languageState = MutableStateFlow("zh")
     val languageState: StateFlow<String> = _languageState
 
+    // 搜尋花卉關鍵字
+    private val _searchKeyword = MutableStateFlow("")
+    val searchKeyword: StateFlow<String> = _searchKeyword
+
+    // 啟動協程持續監聽使用者的語言偏好設定變更
     init {
         viewModelScope.launch {
             LanguagePreference.getLanguageFlow(application).collect {
@@ -39,6 +45,7 @@ class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(
         }
     }
 
+    // 切換語系
     fun toggleLanguage() {
         viewModelScope.launch {
             val newLang = if (_languageState.value == "zh") "en" else "zh"
@@ -53,6 +60,7 @@ class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(
         }
     }
 
+    // 取得賞花資訊
     fun getFlowerData() {
         viewModelScope.launch {
             try {
@@ -67,6 +75,7 @@ class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(
         }
     }
 
+    // 取得海域景點資訊
     fun getAttractionData() {
         viewModelScope.launch {
             try {
@@ -84,4 +93,15 @@ class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(
             }
         }
     }
+
+    fun updateSearchKeyword(keyword: String) {
+        _searchKeyword.value = keyword
+    }
+
+    // 回傳篩選後的花卉資料
+    fun getFilteredData(): StateFlow<List<FlowerDataResponseItem>> =
+        combine(_flowerState, _searchKeyword) { flowerList, keyword ->
+            if (keyword.isBlank()) flowerList
+            else flowerList.filter { it.flowerType.contains(keyword, ignoreCase = true) }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 }
