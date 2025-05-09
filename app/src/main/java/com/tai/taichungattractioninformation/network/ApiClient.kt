@@ -45,11 +45,4 @@ object ApiClient {
             .build()
             .create(ApiService::class.java)
     }
-
-    // Google Image Search API 的 Retrofit 實例
-    val googleApi = Retrofit.Builder()
-        .baseUrl("https://www.googleapis.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(ApiService.GoogleSearchApi::class.java)
 }

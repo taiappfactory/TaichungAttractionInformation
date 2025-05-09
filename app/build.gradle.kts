@@ -5,8 +5,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    // 加入 Firebase 插件
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -20,7 +18,6 @@ android {
     }
 
     val googleApiKey = localProperties.getProperty("GOOGLE_API_KEY")
-    val googleSearchCx = localProperties.getProperty("GOOGLE_SEARCH_CX")
 
     defaultConfig {
         applicationId = "com.tai.taichungattractioninformation"
@@ -36,7 +33,6 @@ android {
 
         // 讓 BuildConfig 可以用這個 key
         buildConfigField("String", "GOOGLE_API_KEY", "\"$googleApiKey\"")
-        buildConfigField("String", "GOOGLE_SEARCH_CX", "\"$googleSearchCx\"")
     }
 
     buildTypes {
@@ -49,13 +45,6 @@ android {
         }
     }
     compileOptions {
-        // Flag to enable support for the new language APIs
-
-        // For AGP 4.1+
-//        isCoreLibraryDesugaringEnabled = true
-        // For AGP 4.0
-        // coreLibraryDesugaringEnabled = true
-
         // Sets Java compatibility to Java 8
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -85,7 +74,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
-//    implementation(libs.androidx.room.compiler)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

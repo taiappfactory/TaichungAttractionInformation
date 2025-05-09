@@ -109,6 +109,7 @@ fun AttractionScreen(attractionDataItem: List<AttractionDataResponseItem>, langu
                     )
                 }
 
+                // api 內容有提供英文版，故內文可以呈現英文版
                 Column(modifier = Modifier.padding(16.dp)) {
                     val name = if (language == "zh") item.name else item.englishName
                     val intro = if (language == "zh") item.introChinese else item.introEnglish
@@ -129,12 +130,6 @@ fun AttractionScreen(attractionDataItem: List<AttractionDataResponseItem>, langu
                     Spacer(Modifier.height(8.dp))
 
                     // 景點官網
-                    val linkText = buildAnnotatedString {
-                        val url = item.url
-                        append(stringResource(R.string.label_official_web))
-                        addStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline), 0, length)
-                        addStringAnnotation("URL", url, 0, length)
-                    }
                     Text(
                         text = stringResource(R.string.label_official_web),
                         color = Color.Blue,
@@ -153,12 +148,6 @@ fun AttractionScreen(attractionDataItem: List<AttractionDataResponseItem>, langu
                     Spacer(Modifier.height(8.dp))
 
                     // Google 地圖
-                    val mapText = buildAnnotatedString {
-                        val mapUrl = item.mapServiceUrl
-                        append(stringResource(R.string.label_google_map))
-                        addStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline), 0, length)
-                        addStringAnnotation("MAP", mapUrl, 0, length)
-                    }
                     Text(
                         text = stringResource(R.string.label_google_map),
                         color = Color.Blue,
