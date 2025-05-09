@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.tai.taichungattractioninformation.models.AttractionDataResponseItem
 import com.tai.taichungattractioninformation.models.FlowerDataResponseItem
+import com.tai.taichungattractioninformation.models.RestaurantDataResponseItem
 import com.tai.taichungattractioninformation.repo.Repository
 import com.tai.taichungattractioninformation.ui.MainActivity
 import com.tai.taichungattractioninformation.util.LanguagePreference
@@ -27,6 +28,9 @@ class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(
     // Attraction Data
     private val _attractionState = MutableStateFlow<List<AttractionDataResponseItem>>(emptyList())
     val attractionState: StateFlow<List<AttractionDataResponseItem>> = _attractionState
+
+    private val _restaurantState = MutableStateFlow<List<RestaurantDataResponseItem>>(emptyList())
+    val restaurantState: StateFlow<List<RestaurantDataResponseItem>> = _restaurantState
 
     // 多語系
     private val _languageState = MutableStateFlow("zh")
@@ -84,10 +88,22 @@ class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(
                 response.forEach {
                     rawData.add(it)
                 }
-
-                Log.d("taitest", "rawData: $rawData")
-
                 _attractionState.value = rawData
+            } catch (e: Exception) {
+                Log.e("Error", "MessageOut: ${e.message}")
+            }
+        }
+    }
+
+    // 取得餐廳資訊
+    fun getRestaurantData() {
+        viewModelScope.launch {
+            try {
+                // 取得花卉資料
+                val response = repo.fetchRestaurantList()
+
+                // 更新狀態並顯示資料
+                _restaurantState.value = response
             } catch (e: Exception) {
                 Log.e("Error", "MessageOut: ${e.message}")
             }
@@ -98,10 +114,21 @@ class FlowerAndAttractionViewModel(application: Application) : AndroidViewModel(
         _searchKeyword.value = keyword
     }
 
+    fun cleanSearchKeyword() {
+        _searchKeyword.value = ""
+    }
+
     // 回傳篩選後的花卉資料
-    fun getFilteredData(): StateFlow<List<FlowerDataResponseItem>> =
+    fun getFlowerFilteredData(): StateFlow<List<FlowerDataResponseItem>> =
         combine(_flowerState, _searchKeyword) { flowerList, keyword ->
             if (keyword.isBlank()) flowerList
             else flowerList.filter { it.flowerType.contains(keyword, ignoreCase = true) }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // 回傳篩選後的餐廳資料
+    fun getRestaurantFilteredData(): StateFlow<List<RestaurantDataResponseItem>> =
+        combine(_restaurantState, _searchKeyword) { restaurantList, keyword ->
+            if (keyword.isBlank()) restaurantList
+            else restaurantList.filter { it.name.contains(keyword, ignoreCase = true) }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 }

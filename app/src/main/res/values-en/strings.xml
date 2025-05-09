@@ -3,9 +3,12 @@
     <string name="app_title">Taichung Fun Day</string>
     <string name="tab_flower">Flower</string>
     <string name="tab_attraction">Attraction</string>
+    <string name="tab_restaurant">Restaurant</string>
     <string name="switch_to_english">English</string>
     <string name="switch_to_chinese">中文</string>
 
+    <string name="label_search_flower">Search Flower Type</string>
+    <string name="label_search_restaurant">Search Restaurant</string>
     <string name="label_flower_type">Flower Type: %1$s</string>
     <string name="label_location">Location: %1$s</string>
     <string name="label_area">Area: %1$s %2$s</string>
@@ -19,5 +22,7 @@
     <string name="label_open_time_note">Open Time Note: %1$s</string>
     <string name="label_official_web">Official Web</string>
     <string name="label_google_map">Google Map</string>
+    <string name="label_google_road_plan">Road Plan</string>
+    <string name="label_parking">Parking Info</string>
 
 </resources>

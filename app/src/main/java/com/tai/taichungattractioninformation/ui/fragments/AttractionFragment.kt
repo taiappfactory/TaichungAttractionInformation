@@ -129,12 +129,6 @@ fun AttractionScreen(attractionDataItem: List<AttractionDataResponseItem>, langu
                     Spacer(Modifier.height(8.dp))
 
                     // 景點官網
-                    val linkText = buildAnnotatedString {
-                        val url = item.url
-                        append(stringResource(R.string.label_official_web))
-                        addStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline), 0, length)
-                        addStringAnnotation("URL", url, 0, length)
-                    }
                     Text(
                         text = stringResource(R.string.label_official_web),
                         color = Color.Blue,
@@ -153,12 +147,6 @@ fun AttractionScreen(attractionDataItem: List<AttractionDataResponseItem>, langu
                     Spacer(Modifier.height(8.dp))
 
                     // Google 地圖
-                    val mapText = buildAnnotatedString {
-                        val mapUrl = item.mapServiceUrl
-                        append(stringResource(R.string.label_google_map))
-                        addStyle(SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline), 0, length)
-                        addStringAnnotation("MAP", mapUrl, 0, length)
-                    }
                     Text(
                         text = stringResource(R.string.label_google_map),
                         color = Color.Blue,

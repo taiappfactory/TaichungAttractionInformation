@@ -36,7 +36,11 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.tai.taichungattractioninformation.R
+import com.tai.taichungattractioninformation.extensions.wrapLocale
+import com.tai.taichungattractioninformation.util.LanguagePreference
 import com.tai.taichungattractioninformation.viewmodels.FlowerAndAttractionViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 class MainActivity : FragmentActivity() {
@@ -72,6 +76,13 @@ class MainActivity : FragmentActivity() {
         navController?.navigate(destinationId)
     }
 
+    // 在 Application 或 Activity 中動態套用使用者偏好的語言設定
+    override fun attachBaseContext(newBase: Context) {
+        val lang = runBlocking { LanguagePreference.getLanguageFlow(newBase).first() }
+        val context = newBase.wrapLocale(lang)
+        super.attachBaseContext(context)
+    }
+
     // 動態切換 App 的語言（Locale）設定
     private fun updateLocale(context: Context, language: String) {
         val locale = Locale(language) // 建立新的 Locale 物件，例如 "en"、"zh"、"ja"
@@ -80,8 +91,8 @@ class MainActivity : FragmentActivity() {
         val config = Configuration(context.resources.configuration)
         config.setLocale(locale)      // 將新語言設到目前的 Configuration 上
 
-        context.resources.updateConfiguration(config, context.resources.displayMetrics)
         // 更新 context 的資源設定，讓 UI 馬上反映語言變更
+        context.resources.updateConfiguration(config, context.resources.displayMetrics)
     }
 }
 
@@ -133,6 +144,7 @@ fun MainScreen(
                                     onClick = {
                                         selectedTabIndex = 0
                                         navigateToTabFragment(R.id.fragment_flower)  // 導航到花卉 Fragment
+                                        viewModel.cleanSearchKeyword() // 清空搜尋關鍵字
                                     },
                                     text = { Text(stringResource(id = R.string.tab_flower)) }
                                 )
@@ -143,6 +155,15 @@ fun MainScreen(
                                         navigateToTabFragment(R.id.fragment_attraction)  // 導航到景點 Fragment
                                     },
                                     text = { Text(stringResource(id = R.string.tab_attraction)) }
+                                )
+                                Tab(
+                                    selected = selectedTabIndex == 2,
+                                    onClick = {
+                                        selectedTabIndex = 2
+                                        navigateToTabFragment(R.id.fragment_restaurant)  // 導航到景點 Fragment
+                                        viewModel.cleanSearchKeyword() // 清空搜尋關鍵字
+                                    },
+                                    text = { Text(stringResource(id = R.string.tab_restaurant)) }
                                 )
                             }
                         }
