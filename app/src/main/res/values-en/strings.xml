@@ -12,7 +12,7 @@
     <string name="label_flower_type">Flower Type: %1$s</string>
     <string name="label_location">Location: %1$s</string>
     <string name="label_area">Area: %1$s %2$s</string>
-    <string name="label_viewing_period">Viewing Period: %1$s</string>
+    <string name="label_viewing_period">Viewing Period: %1$s</string >
 
     <string name="label_name">Name: %1$s</string>
     <string name="label_intro">Introduction: %1$s</string>

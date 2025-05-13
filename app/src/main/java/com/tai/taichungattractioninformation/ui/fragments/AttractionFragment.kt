@@ -109,6 +109,7 @@ fun AttractionScreen(attractionDataItem: List<AttractionDataResponseItem>, langu
                     )
                 }
 
+                // api 內容有提供英文版，故內文可以呈現英文版
                 Column(modifier = Modifier.padding(16.dp)) {
                     val name = if (language == "zh") item.name else item.englishName
                     val intro = if (language == "zh") item.introChinese else item.introEnglish
